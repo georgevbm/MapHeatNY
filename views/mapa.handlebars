@@ -1,6 +1,72 @@
-{{!-- <div id="map" style="width:100%; height: 100%; position:absolute;"></div> --}}
+<div id="map" style="width:100%; height: 100%; position:absolute;"></div>
+<button id="geolocation" style="position: absolute;
+	z-index: 2;
+	top: 5px;
+	right: 5px;
+	font-size: 13px;
+	background-color: #3071a9;
+	color: #fff;
+	border: 1px solid #285e8e;
+	padding: 6px 12px;
+	border-radius: 4px;">Ponto</button>
+<script type="text/javascript">
+    var pointMostrar = false;
 
-{{#each venues}}
+    var baseLayer = new ol.layer.Tile({
+        source: new ol.source.OSM()
+    });
+
+    var view = new ol.View({
+        center: ol.proj.fromLonLat([-74.2598707, 40.6976701]),
+        zoom: 8,
+        minZoom: 5
+    });
+
+    var map = new ol.Map({
+        target: 'map',
+        controls: ol.control.defaults().extend([
+            new ol.control.ScaleLine(),
+            new ol.control.ZoomSlider()
+        ]),
+        layers: [baseLayer],
+        view: view
+    });
+
+    var style = new ol.style.Style({
+        image: new ol.style.Circle({
+            radius: 7,
+            stroke: new ol.style.Stroke({
+                color: '#FF0000',
+                width: 3
+            }),
+            fill: new ol.style.Fill({
+                color: '#FF0000'
+            })
+        })
+    });
+
+    var point = new ol.layer.Vector({
+        source: new ol.source.Vector({
+            features: [new ol.Feature({
+                geometry: new ol.geom.Point(ol.proj.transform([-74.2598707, 40.6976701], 'EPSG:4326', 'EPSG:3857'))
+            })]
+        }),
+        style: style
+    });
+
+    const button = document.getElementById('geolocation');
+    button.addEventListener('click', function (e) {
+        if(!pointMostrar){
+            map.addLayer(point);
+            pointMostrar = true;
+        } else {
+            map.removeLayer(point);
+            pointMostrar = false;
+        }
+    });
+</script>
+
+{{!-- {{#each venues}}
 {{id}}
 {{name}}
 {{lat}}
@@ -14,4 +80,4 @@
 {{todo}}
 {{categoryid}}
 <br>
-{{/each}}
+{{/each}} --}}

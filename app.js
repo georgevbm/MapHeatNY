@@ -3,7 +3,6 @@ const app = express();
 const handlebars = require('express-handlebars');
 const bodyParser = require('body-parser');
 const Venue = require('./models/Venue');
-const ol = require()
 
 // Config
 // Template Engine

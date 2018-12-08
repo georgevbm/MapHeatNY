@@ -1,5 +1,30 @@
-<div id="map" style="width:100%; height: 100%; position:absolute;"></div>
-<button id="geolocation" style="position: absolute;
+<div id="map" style=" background-color:red; width:100%; height: 100%; position:absolute;"></div>
+
+<script>
+    var map;
+   function initMap() {
+       map = new google.maps.Map(document.getElementById('map'), {
+           center: { lat: -34.397, lng: 150.644 },
+           zoom: 8
+       });
+
+       var marker = new google.maps.Marker({
+           position: { lat: -34.397, lng: 150.644 },
+           map: map
+       });
+   }
+
+    $(function () {
+        $.get("venues", {},
+            function (data) {
+                console.log(data[0]['venue']['name']);
+            }, "json");
+    });
+</script>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLCikJSgRlE-ZJOobE8k59msXnQjret3A&callback=initMap"></script>
+
+{{!-- <button id="point" style="position: absolute;
 	z-index: 2;
 	top: 5px;
 	right: 5px;
@@ -9,6 +34,8 @@
 	border: 1px solid #285e8e;
 	padding: 6px 12px;
 	border-radius: 4px;">Ponto</button>
+--}}
+{{!--
 <script type="text/javascript">
     var pointMostrar = false;
 
@@ -54,9 +81,9 @@
         style: style
     });
 
-    const button = document.getElementById('geolocation');
+    const button = document.getElementById('point');
     button.addEventListener('click', function (e) {
-        if(!pointMostrar){
+        if (!pointMostrar) {
             map.addLayer(point);
             pointMostrar = true;
         } else {
@@ -64,20 +91,10 @@
             pointMostrar = false;
         }
     });
-</script>
+</script> --}}
 
 {{!-- {{#each venues}}
-{{id}}
-{{name}}
 {{lat}}
 {{lon}}
-{{address}}
-{{city}}
-{{state}}
-{{checkin}}
-{{checkeduser}}
-{{currentuser}}
-{{todo}}
-{{categoryid}}
 <br>
 {{/each}} --}}

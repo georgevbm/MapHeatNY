@@ -1,12 +1,11 @@
-<div id="map" style=" background-color:red; width:100%; height: 100%; position:absolute;"></div>
+<div id="map" style="width:100%; height: 100%; position:absolute;"></div>
 
 <script>
     var map;
     var latitude;
     var longitude;
     var venuesDB = 57484;
-
-    var aux = [];
+    var dataOut = [];
 
     setTimeout(function () {
         initMap();
@@ -15,7 +14,7 @@
     $(function () {
         $.get("venues", {},
             function (data) {
-                aux = data;
+                dataOut = data;
             }, "json");
     });
 
@@ -25,25 +24,29 @@
             zoom: 7
         });
 
-        if (aux.length == 0) {
+        if (dataOut.length == 0) {
             console.log("Aguarde...");
         } else {
+            var latLng;
+            var markers = [];
+
             for (var i = 0; i < venuesDB; i++) {
-                var latLng = new google.maps.LatLng(aux[i]['venue']['lat'], aux[i]['venue']['lon']);
                 var marker = new google.maps.Marker({
-                    position: latLng,
-                    map: map
+                    position: { lat: dataOut[i]['venue']['lat'], lng: dataOut[i]['venue']['lon'] }
                 });
+
+                markers.push(marker);
             }
+
+            var markerCluster = new MarkerClusterer(map, markers,
+                { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
         }
     }
-
-
-
-
 </script>
 
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLCikJSgRlE-ZJOobE8k59msXnQjret3A&callback=initMap"></script>
+<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLCikJSgRlE-ZJOobE8k59msXnQjret3A&libraries=visualization&callback=initMap"></script>
 
 <button id="point" style="position: absolute;
 	z-index: 2;
@@ -54,68 +57,4 @@
 	color: #fff;
 	border: 1px solid #285e8e;
 	padding: 6px 12px;
-	border-radius: 4px;">Ponto</button>
-
-{{!--
-<script type="text/javascript">
-    var pointMostrar = false;
-
-    var baseLayer = new ol.layer.Tile({
-        source: new ol.source.OSM()
-    });
-
-    var view = new ol.View({
-        center: ol.proj.fromLonLat([-74.2598707, 40.6976701]),
-        zoom: 8,
-        minZoom: 5
-    });
-
-    var map = new ol.Map({
-        target: 'map',
-        controls: ol.control.defaults().extend([
-            new ol.control.ScaleLine(),
-            new ol.control.ZoomSlider()
-        ]),
-        layers: [baseLayer],
-        view: view
-    });
-
-    var style = new ol.style.Style({
-        image: new ol.style.Circle({
-            radius: 7,
-            stroke: new ol.style.Stroke({
-                color: '#FF0000',
-                width: 3
-            }),
-            fill: new ol.style.Fill({
-                color: '#FF0000'
-            })
-        })
-    });
-
-    var point = new ol.layer.Vector({
-        source: new ol.source.Vector({
-            features: [new ol.Feature({
-                geometry: new ol.geom.Point(ol.proj.transform([-74.2598707, 40.6976701], 'EPSG:4326', 'EPSG:3857'))
-            })]
-        }),
-        style: style
-    });
-
-    const button = document.getElementById('point');
-    button.addEventListener('click', function (e) {
-        if (!pointMostrar) {
-            map.addLayer(point);
-            pointMostrar = true;
-        } else {
-            map.removeLayer(point);
-            pointMostrar = false;
-        }
-    });
-</script> --}}
-
-{{!-- {{#each venues}}
-{{lat}}
-{{lon}}
-<br>
-{{/each}} --}}
+	border-radius: 4px;">Botão</button>

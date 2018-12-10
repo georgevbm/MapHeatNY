@@ -2,31 +2,52 @@
 
 <script>
     var map;
-   function initMap() {
-       map = new google.maps.Map(document.getElementById('map'), {
-           center: { lat: -34.397, lng: 150.644 },
-           zoom: 8
-       });
+    var latitude;
+    var longitude;
+    var venuesDB = 57484;
 
-       var marker = new google.maps.Marker({
-           position: { lat: -34.397, lng: 150.644 },
-           map: map
-       });
-   }
+    var aux = [];
+
+    setTimeout(function () {
+        initMap();
+    }, 5000);
 
     $(function () {
         $.get("venues", {},
             function (data) {
-                console.log(data[0]['venue']['name']);
+                aux = data;
             }, "json");
     });
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: new google.maps.LatLng(42.89080335202763, -74.68116702094304),
+            zoom: 7
+        });
+
+        if (aux.length == 0) {
+            console.log("Aguarde...");
+        } else {
+            for (var i = 0; i < venuesDB; i++) {
+                var latLng = new google.maps.LatLng(aux[i]['venue']['lat'], aux[i]['venue']['lon']);
+                var marker = new google.maps.Marker({
+                    position: latLng,
+                    map: map
+                });
+            }
+        }
+    }
+
+
+
+
 </script>
 
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLCikJSgRlE-ZJOobE8k59msXnQjret3A&callback=initMap"></script>
 
-{{!-- <button id="point" style="position: absolute;
+<button id="point" style="position: absolute;
 	z-index: 2;
-	top: 5px;
+	top: 65px;
 	right: 5px;
 	font-size: 13px;
 	background-color: #3071a9;
@@ -34,7 +55,7 @@
 	border: 1px solid #285e8e;
 	padding: 6px 12px;
 	border-radius: 4px;">Ponto</button>
---}}
+
 {{!--
 <script type="text/javascript">
     var pointMostrar = false;

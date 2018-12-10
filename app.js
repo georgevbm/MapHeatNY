@@ -4,9 +4,11 @@ const handlebars = require('express-handlebars');
 const bodyParser = require('body-parser');
 const Venue = require('./models/Venue');
 const fs = require('fs');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
-venuesDB = 206415;
 i = 0;
+venuesDB = 57484;
 venuesArray = new Array();
 
 // createJSON();
@@ -21,13 +23,11 @@ app.use(bodyParser.json());
 
 // Rotas
 app.get("/", function (req, res) {
-    // Venue.all().then(function (response) {
     res.render('mapa');
-    // });
 });
 
 app.get("/venues", function (req, res) {
-    res.sendFile(__dirname+"/venue.json");
+    res.sendFile(__dirname + "/venuesny.json");
 });
 
 app.listen(3000, function () {
@@ -35,7 +35,11 @@ app.listen(3000, function () {
 });
 
 function createJSON() {
-    Venue.findAll().then(function (response) {
+    Venue.findAll({
+        where: {
+            [Op.or]: [{ state: 'ny' }, { state: 'NY' }, { state: 'New York' }, { state: 'new york' }, { state: 'New york' }, { state: 'Ny' }]
+        }
+    }).then(function (response) {
         while (i < venuesDB) {
             var dict = {
                 venue: {
@@ -51,7 +55,7 @@ function createJSON() {
 
         var venuesJSON = JSON.stringify(venuesArray);
 
-        fs.writeFile('venue.json', venuesJSON, 'utf8', function (err) {
+        fs.writeFile('venuesny.json', venuesJSON, 'utf8', function (err) {
             if (err) {
                 return console.log(err);
             }

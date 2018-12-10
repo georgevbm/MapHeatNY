@@ -6,6 +6,7 @@
     var longitude;
     var venuesDB = 57484;
     var dataOut = [];
+    var dataNy = [];
 
     setTimeout(function () {
         initMap();
@@ -18,30 +19,48 @@
             }, "json");
     });
 
+    $(function () {
+        $.get("nystate", {},
+            function (data) {
+                dataNy = data;
+            }, "json");
+    });
+
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
             center: new google.maps.LatLng(42.89080335202763, -74.68116702094304),
             zoom: 7
         });
 
+        console.log(dataNy);
+
         if (dataOut.length == 0) {
             console.log("Aguarde...");
         } else {
+            var latLng;
+            var markers = [];
+
             for (var i = 0; i < venuesDB; i++) {
                 var marker = new google.maps.Marker({
                     position: { lat: dataOut[i]['venue']['lat'], lng: dataOut[i]['venue']['lon'] },
-                    title: dataOut[i]['venue']['name'] + ' - ' +  dataOut[i]['venue']['checkedUser'], 
-                    map: map
+                    title: dataOut[i]['venue']['name'] + ' - ' +  dataOut[i]['venue']['checkedUser']
                 });
+
+                markers.push(marker);
             }
+
+            var markerCluster = new MarkerClusterer(map, markers,
+                { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
         }
     }
 </script>
 
+<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+</script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLCikJSgRlE-ZJOobE8k59msXnQjret3A&libraries=visualization&callback=initMap"></script>
 
-<a href="http://localhost:3000/groups">
-    <button id="point" style="position: absolute;
+<a href="http://localhost:3000">
+<button id="point" style="position: absolute;
 	z-index: 2;
 	top: 65px;
 	right: 5px;
@@ -50,4 +69,4 @@
 	color: #fff;
 	border: 1px solid #285e8e;
 	padding: 6px 12px;
-	border-radius: 4px;">Agrupamentos</button></a>
+	border-radius: 4px;">Pontos</button></a>

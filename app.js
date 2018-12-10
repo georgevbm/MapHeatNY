@@ -26,8 +26,16 @@ app.get("/", function (req, res) {
     res.render('mapa');
 });
 
+app.get("/groups", function (req, res) {
+    res.render('mapagroups');
+});
+
 app.get("/venues", function (req, res) {
     res.sendFile(__dirname + "/venuesny.json");
+});
+
+app.get("/nystate", function (req, res) {
+    res.sendFile(__dirname + "/nystate.json");
 });
 
 app.listen(3000, function () {

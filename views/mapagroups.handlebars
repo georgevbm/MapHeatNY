@@ -4,9 +4,9 @@
     var map;
     var latitude;
     var longitude;
-    var venuesDB = 57484;
     var dataOut = [];
     var dataNy = [];
+    var stateNy = [];
 
     setTimeout(function () {
         initMap();
@@ -28,11 +28,10 @@
 
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
-            center: new google.maps.LatLng(42.89080335202763, -74.68116702094304),
+            center: new google.maps.LatLng(42.789895857270295, -75.680922880318),
             zoom: 7
         });
 
-        console.log(dataNy);
 
         if (dataOut.length == 0) {
             console.log("Aguarde...");
@@ -40,10 +39,37 @@
             var latLng;
             var markers = [];
 
-            for (var i = 0; i < venuesDB; i++) {
+            for (var i = 0; i < 5863; i++) {
+                var j = 0;
+                var long = 0;
+                var lati = 0;
+
+                while (j < 2) {
+                    if (j == 0) {
+                        long = dataNy['geometries'][0]['coordinates'][0][0][i][j];
+                    } else {
+                        lati = dataNy['geometries'][0]['coordinates'][0][0][i][j];
+                    }
+                    j++;
+                }
+
+                stateNy.push({ lat: lati, lng: long });
+            }
+
+            var polygonNy = new google.maps.Polygon({
+                paths: stateNy,
+                strokeColor: '#FF0000',
+                strokeOpacity: 0.8,
+                strokeWeight: 3,
+                fillColor: '#FF0000',
+                fillOpacity: 0.15
+            });
+            polygonNy.setMap(map);
+
+            for (var i = 0; i < 57484; i++) {
                 var marker = new google.maps.Marker({
                     position: { lat: dataOut[i]['venue']['lat'], lng: dataOut[i]['venue']['lon'] },
-                    title: dataOut[i]['venue']['name'] + ' - ' +  dataOut[i]['venue']['checkedUser']
+                    title: dataOut[i]['venue']['name'] + ' - ' + dataOut[i]['venue']['checkedUser']
                 });
 
                 markers.push(marker);
@@ -60,7 +86,7 @@
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLCikJSgRlE-ZJOobE8k59msXnQjret3A&libraries=visualization&callback=initMap"></script>
 
 <a href="http://localhost:3000">
-<button id="point" style="position: absolute;
+    <button id="point" style="position: absolute;
 	z-index: 2;
 	top: 65px;
 	right: 5px;

@@ -4,8 +4,10 @@
     var map;
     var latitude;
     var longitude;
-    var venuesDB = 57484;
+    var venuesDB = 5863;
     var dataOut = [];
+    var dataNy = [];
+    var stateNy = [];
 
     setTimeout(function () {
         initMap();
@@ -18,22 +20,57 @@
             }, "json");
     });
 
+    $(function () {
+        $.get("nystate", {},
+            function (data) {
+                dataNy = data;
+            }, "json");
+    });
+
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
-            center: new google.maps.LatLng(42.89080335202763, -74.68116702094304),
+            center: new google.maps.LatLng(42.789895857270295, -75.680922880318),
             zoom: 7
         });
 
         if (dataOut.length == 0) {
             console.log("Aguarde...");
         } else {
-            for (var i = 0; i < venuesDB; i++) {
+
+            for (var k = 0; k < 57484; k++) {
                 var marker = new google.maps.Marker({
-                    position: { lat: dataOut[i]['venue']['lat'], lng: dataOut[i]['venue']['lon'] },
-                    title: dataOut[i]['venue']['name'] + ' - ' +  dataOut[i]['venue']['checkedUser'], 
+                    position: { lat: dataOut[k]['venue']['lat'], lng: dataOut[k]['venue']['lon'] },
+                    title: dataOut[k]['venue']['name'] + ' - ' + dataOut[k]['venue']['checkedUser'],
                     map: map
                 });
             }
+
+            for (var i = 0; i < 5863; i++) {
+                var j = 0;
+                var long = 0;
+                var lati = 0;
+
+                while (j < 2) {
+                    if (j == 0) {
+                        long = dataNy['geometries'][0]['coordinates'][0][0][i][j];
+                    } else {
+                        lati = dataNy['geometries'][0]['coordinates'][0][0][i][j];
+                    }
+                    j++;
+                }
+
+                stateNy.push({ lat: lati, lng: long });
+            }
+
+            var polygonNy = new google.maps.Polygon({
+                paths: stateNy,
+                strokeColor: '#FF0000',
+                strokeOpacity: 0.8,
+                strokeWeight: 3,
+                fillColor: '#FF0000',
+                fillOpacity: 0.35
+            });
+            polygonNy.setMap(map);
         }
     }
 </script>

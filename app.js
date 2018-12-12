@@ -30,6 +30,10 @@ app.get("/groups", function (req, res) {
     res.render('mapagroups');
 });
 
+app.get("/checked", function (req, res) {
+    res.render('mapachecked');
+});
+
 app.get("/venues", function (req, res) {
     res.sendFile(__dirname + "/venuesny.json");
 });

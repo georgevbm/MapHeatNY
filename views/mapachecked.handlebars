@@ -7,6 +7,17 @@
     var dataOut = [];
     var dataNy = [];
     var stateNy = [];
+    var maxChecked = 134158;
+    var minMax = [];
+
+    var query = location.search.slice(1);
+    var partes = query.split('&');
+    partes.forEach(function (parte) {
+        var p1 = parte.split('=');
+        minMax.push(p1[1]);
+    });
+
+    console.log(minMax);
 
     setTimeout(function () {
         initMap();
@@ -66,13 +77,17 @@
             });
             polygonNy.setMap(map);
 
+            console.log(minMax[0]);
+
             for (var i = 0; i < 57484; i++) {
                 var marker = new google.maps.Marker({
                     position: { lat: dataOut[i]['venue']['lat'], lng: dataOut[i]['venue']['lon'] },
                     title: dataOut[i]['venue']['name'] + ' - ' + dataOut[i]['venue']['checkedUser']
                 });
 
-                markers.push(marker);
+                if (dataOut[i]['venue']['checkedUser'] >= minMax[0] && dataOut[i]['venue']['checkedUser'] <= minMax[1]) {
+                    markers.push(marker);
+                }
             }
 
             var markerCluster = new MarkerClusterer(map, markers,
@@ -97,7 +112,7 @@
 	padding: 6px 12px;
 	border-radius: 4px;">Pontos</button></a>
 
-<a href="http://localhost:3000/checked">
+<a href="http://localhost:3000/groups">
     <button id="point" style="position: absolute;
 	z-index: 2;
 	top: 100px;
@@ -107,4 +122,24 @@
 	color: #fff;
 	border: 1px solid #285e8e;
 	padding: 6px 12px;
-	border-radius: 4px;">Check-ins</button></a>
+	border-radius: 4px;">Agrupamentos</button></a>
+
+<div style="position: absolute;
+	z-index: 2;
+	top: 135px;
+	right: 5px;
+    padding: 8px;
+    background-color: #3071a9;
+    border-radius: 4px;">
+
+    <form action="http://localhost:3000/checked" method="GET">
+        <input type="number" name="checkinsMin" style="font-size: 13px; padding: 5px; width: 70px;">
+        <input type="number" name="checkinsMax" style="font-size: 13px; padding: 5px; width: 70px;">
+        <button type="submit" style="font-size: 13px;
+        padding: 5px;
+        background-color: #004080;
+        color: #fff;">Filtrar</button>
+    </form>
+
+    <p style="font-size: 13px; color: #fff; padding: 3px;">Min: 0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Max: 74252</p>
+</div>
